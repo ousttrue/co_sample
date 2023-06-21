@@ -3,6 +3,20 @@
 #include <iostream>
 #include <thread>
 
+struct Awaiter
+{
+  bool await_ready()
+  {
+    std::cout << "[Awaiter] await_ready" << std::endl;
+    return false;
+  }
+  void await_suspend(std::coroutine_handle<> handle)
+  {
+    std::cout << "[Awaiter] await_suspend" << std::endl;
+  }
+  void await_resume() { std::cout << "[Awaiter] await_resume" << std::endl; }
+};
+
 // Promise
 struct Co
 {
@@ -27,6 +41,9 @@ struct Co
     {
       std::cout << "[promise_type] return_void" << std::endl;
     }
+
+    struct awaiter
+    {};
   };
   std::coroutine_handle<promise_type> handle;
 };
@@ -36,16 +53,18 @@ Co
 run()
 {
   std::cout << "[run] before" << std::endl;
-  co_return;
+  co_await Awaiter{};
   std::cout << "[run] after" << std::endl;
+  // co_return;
 }
 
 int
 main(int argc, char** argv)
 {
   auto co = run();
-  std::cout << "[main]before resume: " << co.handle.done() << std::endl;
-  co.handle.resume();
-  std::cout << "[main]after resume: " << co.handle.done() << std::endl;
+  for (int i = 0; !co.handle.done(); ++i) {
+    std::cout << "[main]resume " << i << std::endl;
+    co.handle.resume();
+  }
   return 0;
 }

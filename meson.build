@@ -4,3 +4,4 @@ project(
     default_options: ['cpp_std=c++latest'],
 )
 subdir('simple')
+subdir('awaiter')
