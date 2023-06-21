@@ -41,6 +41,21 @@ struct Co
     {
       std::cout << "[promise_type] return_void" << std::endl;
     }
+
+    int m_value = -1;
+#if 1
+    std::suspend_always yield_value(int value)
+    {
+      m_value = value;
+      return {};
+    }
+#else
+    std::suspend_always await_transform(int value)
+    {
+      m_value = value;
+      return {};
+    }
+#endif
   };
   std::coroutine_handle<promise_type> handle;
 };
@@ -50,7 +65,9 @@ Co
 run()
 {
   std::cout << "[run] before" << std::endl;
-  co_await Awaiter{};
+  co_yield 1;
+  co_yield 2;
+  co_yield 3;
   std::cout << "[run] after" << std::endl;
   // co_return;
 }
@@ -60,7 +77,8 @@ main(int argc, char** argv)
 {
   auto co = run();
   for (int i = 0; !co.handle.done(); ++i) {
-    std::cout << "[main]resume " << i << std::endl;
+    std::cout << "[main]resume " << i << "=>" << co.handle.promise().m_value
+              << std::endl;
     co.handle.resume();
   }
   return 0;
