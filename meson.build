@@ -10,6 +10,6 @@ subdir('ret')
 subdir('task')
 
 asio_dep = dependency('asio')
-subdir('asio')
-subdir('await_t')
+subdir('asio_http_get')
+subdir('asio_simple')
 
