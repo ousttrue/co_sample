@@ -1,4 +1,5 @@
 /builddir/
 /prefix/
-/subprojects/
+/subprojects/*
+!/subprojects/asio.wrap
 
