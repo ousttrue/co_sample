@@ -12,4 +12,5 @@ subdir('task')
 asio_dep = dependency('asio')
 subdir('asio_http_get')
 subdir('asio_simple')
+subdir('asio_thread')
 
